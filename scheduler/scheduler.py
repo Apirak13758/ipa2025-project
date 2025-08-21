@@ -1,13 +1,14 @@
 import time, pika
-
-from bson import json_util
+import json
+from bson import json_util, BSON
 from producer import produce
 from database import get_router_info
+import os
 
 
 def scheduler():
 
-    INTERVAL = 10.0
+    INTERVAL = 60.0
     next_run = time.monotonic()
     count = 0
 
@@ -21,7 +22,7 @@ def scheduler():
         try:
             for data in get_router_info():
                 body_bytes = json_util.dumps(data).encode("utf-8")
-                produce("localhost", body_bytes)
+                produce(os.environ.get("RABBITMQ_HOST"), body_bytes)
         except Exception as e:
             print(e)
             time.sleep(3)

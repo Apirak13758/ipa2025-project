@@ -1,0 +1,72 @@
+services:
+  web:
+    build: ./web
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mongo
+    networks:
+      - app-net
+    env_file:
+      - .env
+    environment:
+      MONGO_URI: "mongodb://${MONGO_URL}:27017/"
+      DB_NAME: "${DB}"
+
+  mongo:
+    image: mongo:6
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - app-net
+    env_file:
+      - .env
+  
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+    networks:
+      - app-net
+    env_file:
+      - .env
+  
+  scheduler:
+    build: ./scheduler
+    depends_on:
+      - rabbitmq
+    networks:
+      - app-net
+    env_file:
+      - .env
+    environment:
+      MONGO_URI: "mongodb://${MONGO_URL}:27017/"
+      DB_NAME: "${DB}"
+      RABBITMQ_HOST: rabbitmq
+
+  worker:
+    build: ./worker
+    depends_on:
+      - rabbitmq
+    networks:
+      - app-net
+    env_file:
+      - .env
+    environment:
+      MONGO_URI: "mongodb://${MONGO_URL}:27017/"
+      DB_NAME: "${DB}"
+      RABBITMQ_HOST: rabbitmq
+
+volumes:
+  mongo-data:
+
+networks:
+  app-net:
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.20.0.0/24 # Define your desired subnet
+          gateway: 172.20.0.1

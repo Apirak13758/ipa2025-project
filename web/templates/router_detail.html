@@ -1,0 +1,32 @@
+<html>
+<head>
+    <title>Sample app</title>
+    <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+    <h1>Router: {{ ip }}</h1>
+    <h2>Recent Interface Status</h2>
+        <table border="1" cellpadding="5" cellspacing="0">
+            <tr>
+                <th>Timestamp</th>
+                <th>Interface</th>
+                <th>IP Address</th>
+                <th>Status</th>
+                <th>Protocol</th>
+            </tr>
+
+            {% for entry in status %}
+            {% for iface in entry.interfaces %}
+            <tr>
+                <td>{{ entry.timestamp }}</td>
+                <td>{{ iface.INTERFACE }}</td>
+                <td>{{ iface.IP_ADDRESS }}</td>
+                <td>{{ iface.STATUS }}</td>
+                <td>{{ iface.PROTOCOL }}</td>
+            </tr>
+            {% endfor %}
+            {% endfor %}
+        </table>
+        <hr>
+</body>
+</html>

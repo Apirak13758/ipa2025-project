@@ -1,0 +1,2 @@
+Template, Platform, Command
+cisco_ios_show_ip_interface_brief.textfsm, cisco_ios, show ip interface brief

@@ -1,0 +1,10 @@
+Value INTERFACE (\S+)
+Value IP_ADDRESS (\S+)
+Value STATUS (\S+)
+Value PROTOCOL (\S+)
+
+Start
+  ^Interface\s+IP-Address\s+OK\?\s+Method\s+Status\s+Protocol -> RecordLines
+
+RecordLines
+  ^${INTERFACE}\s+${IP_ADDRESS}\s+\S+\s+\S+\s+${STATUS}\s+${PROTOCOL} -> Record

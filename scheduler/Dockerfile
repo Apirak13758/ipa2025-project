@@ -1,7 +1,9 @@
-FROM python:3.10-slim
+FROM python:3.12.3
 WORKDIR /home/myapp
 COPY requirements.txt .
 COPY producer.py .
-RUN pip install -r requirements.txt
-EXPOSE 8080
-CMD ["python3", "app.py"]
+COPY database.py .
+COPY scheduler.py .
+RUN pip install pymongo
+RUN pip install pika
+CMD ["python3", "scheduler.py"]
