@@ -24,7 +24,7 @@
     <ul>
         {% for routerData in data %}
         <li>
-            {{ routerData.ip }} - {{ routerData.username }}
+            <a href="{{ url_for('router_detail', input_ip=routerData.ip) }}">{{ routerData.ip }}</a> - {{ routerData.username }}
             <form method="POST" action="{{ url_for('delete_comment') }}" style="display:inline">
                 <input type="hidden" name="idx" value={{ routerData._id }}>
                 <button type="submit">Delete</button>
