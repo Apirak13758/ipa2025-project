@@ -32,12 +32,16 @@ def produce(host, body, exc_name, queue_name, routing_key):
         channel = connection.channel()
 
         # Declare the exchange and queue.
-        channel.exchange_declare(exchange=exc_name, exchange_type="direct")
-        channel.queue_declare(queue=queue_name)
-        channel.queue_bind(queue=queue_name, exchange=exc_name, routing_key=routing_key)
+        channel.exchange_declare(exchange="jobs", exchange_type="direct")
+        channel.queue_declare(queue="router_jobs")
+        channel.queue_bind(
+            queue="router_jobs", exchange="jobs", routing_key="check_interfaces"
+        )
 
         # Publish the message.
-        channel.basic_publish(exchange=exc_name, routing_key=routing_key, body=body)
+        channel.basic_publish(
+            exchange="jobs", routing_key="check_interfaces", body=body
+        )
 
         print(f" [x] Sent '{body}'")
 
@@ -54,10 +58,7 @@ def main():
     # Encapsulate the script's logic in a main function.
     host = "rabbitmq"
     message_body = "192.168.1.44"
-    exchange = "jobs"
-    queue = "router_jobs"
-    key = "check_interfaces"
-    produce(host, message_body, exchange, queue, key)
+    produce(host, message_body)
 
 
 # This construct makes the script reusable as a module.
