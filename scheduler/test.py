@@ -23,8 +23,8 @@ try:
 except json.JSONDecodeError as e:
     print(f"Error decoding JSON: {e}")
 
-json_string = '''{"_id": {"$oid": "68a71c06ed5abcdd4d339121"}, "
-ip": "10.30.6.1", "username": "admin", "password": "cisco"}'''
+json_string = """{"_id": {"$oid": "68a71c06ed5abcdd4d339121"}, "
+ip": "10.30.6.1", "username": "admin", "password": "cisco"}"""
 try:
 
     decode_data = json_util.loads(json_string)

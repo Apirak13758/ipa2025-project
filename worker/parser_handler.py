@@ -30,13 +30,9 @@ def parse_output_with_textfsm(command_output, template_file_name):
         index_file = "index"
         cli_table = clitable.CliTable(index_file, template_dir)
         # attributes_dict ต้องระบุ platform และ command
-        attributes = {
-            "Command": "show ip interface brief", "Platform": "cisco_ios"
-        }
+        attributes = {"Command": "show ip interface brief", "Platform": "cisco_ios"}
         cli_table.ParseCmd(command_output, attributes)
-        parsed_data = [
-            dict(zip(cli_table.header, row)) for row in cli_table
-        ]
+        parsed_data = [dict(zip(cli_table.header, row)) for row in cli_table]
         return parsed_data
 
     except Exception as e:
