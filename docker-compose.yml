@@ -10,7 +10,7 @@ services:
     env_file:
       - .env
     environment:
-      MONGO_URI: "mongodb://${MONGO_URL}:27017/"
+      MONGO_URI: "mongodb://${MONGO_INITDB_ROOT_USERNAME}:${MONGO_INITDB_ROOT_PASSWORD}@mongo:27017/"
       DB_NAME: "${DB}"
 
   mongo:
@@ -43,9 +43,11 @@ services:
     env_file:
       - .env
     environment:
-      MONGO_URI: "mongodb://${MONGO_URL}:27017/"
+      MONGO_URI: "mongodb://${MONGO_INITDB_ROOT_USERNAME}:${MONGO_INITDB_ROOT_PASSWORD}@mongo:27017/"
       DB_NAME: "${DB}"
       RABBITMQ_HOST: rabbitmq
+      RABBIT_USERNAME: "${RABBITMQ_DEFAULT_USER}"
+      RABBIT_PASSWORD: "${RABBITMQ_DEFAULT_PASS}"
 
   worker:
     build: ./worker
@@ -56,9 +58,11 @@ services:
     env_file:
       - .env
     environment:
-      MONGO_URI: "mongodb://${MONGO_URL}:27017/"
+      MONGO_URI: "mongodb://${MONGO_INITDB_ROOT_USERNAME}:${MONGO_INITDB_ROOT_PASSWORD}@mongo:27017/"
       DB_NAME: "${DB}"
       RABBITMQ_HOST: rabbitmq
+      RABBIT_USERNAME: "${RABBITMQ_DEFAULT_USER}"
+      RABBIT_PASSWORD: "${RABBITMQ_DEFAULT_PASS}"
 
 volumes:
   mongo-data:

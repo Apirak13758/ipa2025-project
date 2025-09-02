@@ -13,6 +13,8 @@ import os, time
 RABBITMQ_HOST = os.environ.get("RABBITMQ_HOST")
 RABBITMQ_QUEUE = 'router_jobs'
 TEXTFSM_TEMPLATE = 'cisco_ios_show_ip_interface_brief.textfsm'
+user = os.getenv("RABBIT_USERNAME")
+pwd  = os.getenv("RABBIT_PASSWORD")
 
 # --- ฟังก์ชัน Callback สำหรับ RabbitMQ ---
 
@@ -78,7 +80,8 @@ def start_listening():
     Starts the RabbitMQ consumer to listen for messages in a queue.
     """
     try:
-        connection = pika.BlockingConnection(pika.ConnectionParameters(RABBITMQ_HOST))
+        creds = pika.PlainCredentials(user, pwd)
+        connection = pika.BlockingConnection(pika.ConnectionParameters(RABBITMQ_HOST, credentials=creds))
         channel = connection.channel()
         channel.queue_declare(queue=RABBITMQ_QUEUE)
 
@@ -95,17 +98,14 @@ def start_listening():
         print(f"❌ เกิดข้อผิดพลาด: {e}")
         
 if __name__ == "__main__":
-    INTERVAL = 60.0
+    INTERVAL = 5.0
     next_run = time.monotonic()
-    count = 0
 
     while True:
         now = time.time()
         now_str = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(now))
         ms = int((now % 1) * 1000)  
         now_str_with_ms = f"{now_str}.{ms:03d}"
-        print(f"[{now_str_with_ms}] run #{count}")
         start_listening()
-        count += 1
         next_run += INTERVAL
         time.sleep(max(0.0, next_run - time.monotonic()))

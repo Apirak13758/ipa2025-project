@@ -1,7 +1,9 @@
-import pika
-
+import pika,os
+user = os.getenv("RABBIT_USERNAME")
+pwd  = os.getenv("RABBIT_PASSWORD")
 def produce(host, body):
-    connection = pika.BlockingConnection(pika.ConnectionParameters(host))
+    creds = pika.PlainCredentials(user, pwd)
+    connection = pika.BlockingConnection(pika.ConnectionParameters(host, credentials=creds))
     channel = connection.channel()
 
     channel.exchange_declare(exchange="jobs", exchange_type="direct")
