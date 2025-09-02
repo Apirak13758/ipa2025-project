@@ -18,7 +18,7 @@ def save_to_mongo(data, ip):
     Saves the parsed data to a MongoDB collection with a timestamp.
 
     Arguments:
-        data (list): A list of dictionaries 
+        data (list): A list of dictionaries
         containing the parsed interface data.
     """
     try:
