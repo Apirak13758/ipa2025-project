@@ -13,7 +13,7 @@ RABBIT_USERNAME = os.getenv("RABBIT_USERNAME")
 RABBIT_PASSWORD = os.getenv("RABBIT_PASSWORD")
 
 
-def produce(host, body, exc_name, queue_name, routing_key):
+def produce(host, body):
     """
     Connect to RabbitMQ and publish a message.
 
