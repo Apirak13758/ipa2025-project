@@ -7,7 +7,7 @@ import os
 
 def scheduler():
 
-    INTERVAL = 60.0
+    INTERVAL = 30.0
     next_run = time.monotonic()
     count = 0
 
