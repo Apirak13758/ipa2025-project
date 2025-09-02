@@ -51,7 +51,7 @@ def router_detail(input_ip):
     status_col = routerdb["interface_status"]
     # INTERVAL 60 วินาที: สมมติว่ามี field 'timestamp' เป็น datetime
     recent_status = list(
-        status_col.find({"router_ip": input_ip}).sort("timestamp", -1).limit(3)
+        status_col.find({"router_ip": input_ip}).sort("timestamp", -1).limit(5)
     )
     # print(recent_status)
     template = "router_detail.html"
