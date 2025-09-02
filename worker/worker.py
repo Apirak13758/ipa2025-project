@@ -96,7 +96,8 @@ def start_listening():
         print("โปรดตรวจสอบว่า RabbitMQ Server กำลังทำงานอยู่หรือไม่ หรือการตั้งค่าถูกต้อง.")
     except Exception as e:
         print(f"❌ เกิดข้อผิดพลาด: {e}")
-        
+
+
 if __name__ == "__main__":
     INTERVAL = 5.0
     next_run = time.monotonic()
