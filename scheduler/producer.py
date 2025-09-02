@@ -32,7 +32,9 @@ def produce(host, body, exchange_name, queue_name, routing_key):
         channel = connection.channel()
 
         # Declare the exchange and queue.
-        channel.exchange_declare(exchange=exchange_name, exchange_type="direct")
+        channel.exchange_declare(
+            exchange=exchange_name, exchange_type="direct"
+        )
         channel.queue_declare(queue=queue_name)
         channel.queue_bind(
             queue=queue_name, exchange=exchange_name, routing_key=routing_key

@@ -56,7 +56,9 @@ def on_message_callback(ch, method, properties, body):
         print(command_output)
 
         # 3. Parse the output using TextFSM
-        parsed_data = parse_output_with_textfsm(command_output, TEXTFSM_TEMPLATE)
+        parsed_data = parse_output_with_textfsm(
+            command_output, TEXTFSM_TEMPLATE
+        )
 
         if not parsed_data:
             print("❌ ไม่สามารถ parse ข้อมูลได้.")
@@ -92,7 +94,9 @@ def start_listening():
         channel = connection.channel()
         channel.queue_declare(queue=RABBITMQ_QUEUE)
 
-        print(f" [*] กำลังรอข้อความในคิว '{RABBITMQ_QUEUE}'. กด CTRL+C เพื่อออก.")
+        print(
+            f" [*] กำลังรอข้อความในคิว '{RABBITMQ_QUEUE}'."
+        )
 
         channel.basic_qos(prefetch_count=1)
         channel.basic_consume(

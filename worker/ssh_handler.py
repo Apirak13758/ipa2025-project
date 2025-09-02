@@ -5,8 +5,6 @@
 
 import paramiko
 
-import paramiko
-
 
 def ssh_connect_and_run(ip, username, password, command):
     output = ""
