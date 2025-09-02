@@ -13,14 +13,14 @@ RABBIT_USERNAME = os.getenv("RABBIT_USERNAME")
 RABBIT_PASSWORD = os.getenv("RABBIT_PASSWORD")
 
 
-def produce(host, body, exchange_name, queue_name, routing_key):
+def produce(host, body, exc_name, queue_name, routing_key):
     """
     Connect to RabbitMQ and publish a message.
 
     Args:
         host (str): The RabbitMQ server hostname.
         body (str): The message body to publish.
-        exchange_name (str): The name of the exchange.
+        exc_name (str): The name of the exchange.
         queue_name (str): The name of the queue.
         routing_key (str): The routing key for the message.
     """
@@ -32,16 +32,12 @@ def produce(host, body, exchange_name, queue_name, routing_key):
         channel = connection.channel()
 
         # Declare the exchange and queue.
-        channel.exchange_declare(exchange=exchange_name, exchange_type="direct")
+        channel.exchange_declare(exchange=exc_name, exchange_type="direct")
         channel.queue_declare(queue=queue_name)
-        channel.queue_bind(
-            queue=queue_name, exchange=exchange_name, routing_key=routing_key
-        )
+        channel.queue_bind(queue=queue_name, exchange=exc_name, routing_key=routing_key)
 
         # Publish the message.
-        channel.basic_publish(
-            exchange=exchange_name, routing_key=routing_key, body=body
-        )
+        channel.basic_publish(exchange=exc_name, routing_key=routing_key, body=body)
 
         print(f" [x] Sent '{body}'")
 
