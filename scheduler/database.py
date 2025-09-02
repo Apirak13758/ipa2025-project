@@ -12,8 +12,6 @@ def get_router_info():
     routers = routerdb["routers"]
 
     router_data = routers.find()
-    for data in router_data:
-        print(data)
     return router_data
 
 
