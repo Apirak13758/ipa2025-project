@@ -15,4 +15,4 @@ spec:
               service:
                 name: ipa2025-msapp-web-service
                 port:
-                  number: 8080
+                  number: 80
