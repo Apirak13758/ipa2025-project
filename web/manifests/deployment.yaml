@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: ipa2025-msapp-web
-          image: fewza49144/web:latest
+          image: apirak13758/web:latest
           ports:
             - containerPort: 8080
           envFrom:
