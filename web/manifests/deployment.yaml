@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: ipa2025-msapp-web
-  namespace: lab
+  namespace: ipa2025
 spec:
   replicas: 2
   selector:
@@ -20,4 +20,4 @@ spec:
             - containerPort: 8080
           envFrom:
             - secretRef:
-                name: "lab-secrets" # ชื่อ secret ให้ตรงกับที่เราสร้าง secret ใน rancher
+                name: "ipa-secrets" # ชื่อ secret ให้ตรงกับที่เราสร้าง secret ใน rancher

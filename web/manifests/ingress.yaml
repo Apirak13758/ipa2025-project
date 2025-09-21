@@ -2,7 +2,7 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: ipa2025-msapp-web-ingress
-  namespace: lab
+  namespace: ipa2025
 spec:
   ingressClassName: nginx
   rules:
