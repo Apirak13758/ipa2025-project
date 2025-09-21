@@ -1,29 +1,23 @@
-apiVersion: apps/v1
-kind: Deployment
+# filename: mongo-endpoints.yaml
+apiVersion: v1
+kind: Endpoints
 metadata:
-  name: ipa2025-msapp-scheduler
-  namespace: ipa2025
+  name: rabbitmq
+subsets:
+  - addresses:
+      - ip: 192.168.0.134
+    ports:
+      - port: 5672
+
+---
+
+# filename: mongo-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: rabbitmq
 spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: ipa2025-msapp-scheduler
-  template:
-    metadata:
-      labels:
-        app: ipa2025-msapp-scheduler
-    spec:
-      containers:
-        - name: ipa2025-msapp-scheduler
-          image: apirak13758/scheduler:latest
-          envFrom:
-            - secretRef:
-                name: "ipa-secrets"
-          resources:
-            requests:
-              cpu: "50m"
-              memory: "64Mi"
-            limits:
-              cpu: "200m"
-              memory: "256Mi"
-      restartPolicy: Always
+  ports:
+    - protocol: TCP
+      port: 5672
+      targetPort: 5672
