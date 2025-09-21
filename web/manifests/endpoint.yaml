@@ -1,0 +1,23 @@
+# filename: mongo-endpoints.yaml
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: mongodb
+subsets:
+  - addresses:
+      - ip: 192.168.0.134
+    ports:
+      - port: 27017
+
+---
+
+# filename: mongo-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongodb
+spec:
+  ports:
+    - protocol: TCP
+      port: 27017
+      targetPort: 27017
