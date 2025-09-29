@@ -56,7 +56,7 @@ def produce(host, body):
 def main():
     """Main function to run the producer."""
     # Encapsulate the script's logic in a main function.
-    host = "rabbitmq"
+    host = "localhost"
     message_body = "192.168.1.44"
     produce(host, message_body)
 

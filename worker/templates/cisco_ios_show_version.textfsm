@@ -1,0 +1,11 @@
+# TextFSM template for Cisco IOS 'show version'
+# Variables: VERSION, UPTIME, IMAGE, etc.
+Value VERSION (\S+)
+Value UPTIME (.+)
+Value IMAGE (\S+)
+
+Start
+  ^Cisco IOS Software,.*Version ${VERSION},
+  ^.*uptime is ${UPTIME}
+  ^System image file is "${IMAGE}"
+  # ...add more patterns as needed

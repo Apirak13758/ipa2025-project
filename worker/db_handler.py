@@ -29,7 +29,7 @@ def save_to_mongo(data, ip):
         data_with_timestamp = {
             "router_ip": ip,
             "timestamp": datetime.now(),
-            "interfaces": data,
+            "data": data,
         }
 
         result = collection.insert_one(data_with_timestamp)

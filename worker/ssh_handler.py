@@ -4,9 +4,11 @@
 # Description: A module for handling SSH connections and command execution.
 
 import paramiko
+import time
 
 
-def ssh_connect_and_run(ip, username, password, command):
+def ssh_connect_and_run(ip, username, password, command_type, details={}):
+    print(details)
     output = ""
     ssh_client = paramiko.SSHClient()
 
@@ -33,14 +35,53 @@ def ssh_connect_and_run(ip, username, password, command):
             disabled_algorithms=dict(pubkeys=["rsa-sha2-512", "rsa-sha2-256"]),
         )
 
-        print(f"▶️ กำลังรันคำสั่ง: {command}")
-        stdin, stdout, stderr = ssh_client.exec_command(command)
-        output = stdout.read().decode("utf-8").strip()
+        print("Connection successful. Getting interactive shell...")
+        # Use invoke_shell() for interactive sessions like configuring a router
+        shell = ssh_client.invoke_shell()
+        shell.send('terminal length 0\n')  # Disable paging
+        # Give the shell time to start
+        time.sleep(2)
 
-        error_output = stderr.read().decode("utf-8").strip()
-        if error_output:
-            print(f"⚠️ มีข้อผิดพลาดจาก SSH: {error_output}")
+        # --- List of commands to execute ---
+        commands = [
+            f"enable\n",
+            f"show ip interface brief\n",
+            f"show version\n",
+            f"show ip route\n",
+        ]
+        commands1 = [
+            f"enable\n",
+            f"{details.get('ENABLE_PASS', '')}\n",
+            f"configure terminal\n",
+            f"interface {details.get('INTERFACE_NAME', '')}\n",
+            f"ip address {details.get('NEW_IP_ADDRESS', '')} {details.get('SUBNET_MASK', '')}\n",
+            f"no shutdown\n", # Ensures the interface is administratively up
+            f"end\n",
+            f"write memory\n" # Saves the running-config to startup-config
+        ]
 
+        if command_type == "show":
+            final_command = commands
+        elif command_type == "config":
+            final_command = commands1 + commands
+        else:
+            print("Invalid command type.")
+            return ""
+
+        # --- Execute Commands ---
+        print("Sending configuration commands...")
+        for command in final_command:
+            shell.send(command)
+            # Add a delay between commands to allow the device to process them
+            time.sleep(1.5)
+
+        # --- Capture and Print Output ---
+        # The buffer might not capture everything if there's a lot of output,
+        # but it's usually enough for configuration confirmation.
+        output = shell.recv(65535).decode('utf-8')
+        print("\n--- Router Output ---")
+        print(output)
+        print("--- End of Output ---\n")
     except Exception as e:
         print(f"❌ เกิดข้อผิดพลาดในการเชื่อมต่อ SSH: {e}")
     finally:

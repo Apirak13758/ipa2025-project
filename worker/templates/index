@@ -1,2 +1,4 @@
 Template, Platform, Command
 cisco_ios_show_ip_interface_brief.textfsm, cisco_ios, show ip interface brief
+cisco_ios_show_ip_route.textfsm, cisco_ios, show ip route
+cisco_ios_show_version.textfsm, cisco_ios, show version
