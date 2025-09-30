@@ -3,9 +3,10 @@
 Value VERSION (\S+)
 Value UPTIME (.+)
 Value IMAGE (\S+)
+Value HOSTNAME (.*)
 
 Start
   ^Cisco IOS Software,.*Version ${VERSION},
-  ^.*uptime is ${UPTIME}
+  ^${HOSTNAME} uptime is ${UPTIME}
   ^System image file is "${IMAGE}"
   # ...add more patterns as needed

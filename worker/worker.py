@@ -8,8 +8,9 @@ from other modules to perform tasks.
 import pika
 import json
 from ssh_handler import ssh_connect_and_run
-from db_handler import save_to_mongo
+from db_handler import save_to_mongo, delete_by_id
 from parser_handler import parse_output_with_textfsm
+from bson import ObjectId
 import os
 import time
 
@@ -34,6 +35,7 @@ def on_message_callback(ch, method, properties, body):
         # 1. Decode and parse the JSON message body
         message_data = json.loads(body.decode())
 
+        idx = message_data.get("_id")
         ip = message_data.get("ip")
         username = message_data.get("username")
         password = message_data.get("password")
@@ -47,6 +49,8 @@ def on_message_callback(ch, method, properties, body):
 
         # 2. SSH to the device and get combined output
         command_output = ssh_connect_and_run(ip, username, password, command_type, details)
+        if command_type != "show":
+            delete_by_id(idx.get("$oid"))
 
         if not command_output:
             print("❌ ไม่ได้รับข้อมูลจากอุปกรณ์. ยกเลิกการประมวลผล.")
