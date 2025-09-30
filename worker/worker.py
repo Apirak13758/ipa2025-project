@@ -12,7 +12,6 @@ from db_handler import save_to_mongo, delete_by_id
 from parser_handler import parse_output_with_textfsm
 from bson import ObjectId
 import os
-import time
 
 # --- การตั้งค่า (Configuration) ---
 RABBITMQ_HOST = os.environ.get("RABBITMQ_HOST")
@@ -139,14 +138,5 @@ def start_listening():
 
 
 if __name__ == "__main__":
-    INTERVAL = 5.0
-    next_run = time.monotonic()
-
     while True:
-        now = time.time()
-        now_str = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(now))
-        ms = int((now % 1) * 1000)
-        now_str_with_ms = f"{now_str}.{ms:03d}"
         start_listening()
-        next_run += INTERVAL
-        time.sleep(max(0.0, next_run - time.monotonic()))
