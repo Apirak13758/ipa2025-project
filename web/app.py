@@ -105,18 +105,22 @@ def update_config(input_ip):
             ip_only = ip_part.strip()
             prefix = int(prefix.strip())
             mask_bits = (0xFFFFFFFF << (32 - prefix)) & 0xFFFFFFFF
-            subnet_mask = ".".join([
-                str((mask_bits >> 24) & 0xFF),
-                str((mask_bits >> 16) & 0xFF),
-                str((mask_bits >> 8) & 0xFF),
-                str(mask_bits & 0xFF)
-            ])
+            subnet_mask = ".".join(
+                [
+                    str((mask_bits >> 24) & 0xFF),
+                    str((mask_bits >> 16) & 0xFF),
+                    str((mask_bits >> 8) & 0xFF),
+                    str(mask_bits & 0xFF),
+                ]
+            )
         else:
             ip_only = new_raw_ip
 
         # Find the matching old data row
-        old_data = next((o for o in old_status_data
-                         if o.get("INTERFACE") == iface.get("name")), None)
+        old_data = next(
+            (o for o in old_status_data if o.get("INTERFACE") == iface.get("name")),
+            None,
+        )
 
         if old_data:
             old_ip = old_data.get("IP_ADDRESS", "").strip()
