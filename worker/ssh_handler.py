@@ -44,20 +44,21 @@ def ssh_connect_and_run(ip, username, password, command_type, details={}):
 
         # --- List of commands to execute ---
         commands = [
-            f"enable\n",
-            f"show ip interface brief\n",
-            f"show version\n",
-            f"show ip route\n",
+            "enable\n",
+            "show ip interface brief\n",
+            "show version\n",
+            "show ip route\n",
         ]
+        
         commands1 = [
-            f"enable\n",
+            "enable\n",
             f"{details.get('ENABLE_PASS', '')}\n",
-            f"configure terminal\n",
+            "configure terminal\n",
             f"interface {details.get('INTERFACE_NAME', '')}\n",
             f"ip address {details.get('NEW_IP_ADDRESS', '')} {details.get('SUBNET_MASK', '')}\n",
-            f"no shutdown\n",  # Ensures the interface is administratively up
-            f"end\n",
-            f"write memory\n",  # Saves the running-config to startup-config
+            "no shutdown\n",  # Ensures the interface is administratively up
+            "end\n",
+            "write memory\n",  # Saves the running-config to startup-config
         ]
 
         if command_type == "show":
