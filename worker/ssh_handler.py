@@ -56,7 +56,7 @@ def ssh_connect_and_run(ip, username, password, command_type, details={}):
             "configure terminal\n",
             f"interface {details.get('INTERFACE_NAME', '')}\n",
             f"ip address {details.get('NEW_IP_ADDRESS', '')} {details.get('SUBNET_MASK', '')}\n",
-            "no shutdown\n",  # Ensures the interface is administratively up
+            f"{details.get('STATUS', 'no shutdown')}\n",  # Ensures the interface is administratively up
             "end\n",
             "write memory\n",  # Saves the running-config to startup-config
         ]

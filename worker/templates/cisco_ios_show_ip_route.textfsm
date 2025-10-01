@@ -1,11 +1,13 @@
-# TextFSM template for Cisco IOS 'show ip route'
-# Variables: NETWORK, MASK, NEXT_HOP, INTERFACE, etc.
-Value NETWORK (\S+)
-Value MASK (\S+)
+Value Required ROUTE_CODE (\S+(?:\s+\S+)?)
+Value Required NETWORK (\S+)
+Value Required MASK (\d+)
+Value ADMIN_DISTANCE (\d+)
+Value METRIC (\S+)
 Value NEXT_HOP (\S+)
 Value INTERFACE (\S+)
 
 Start
-  ^O\s+${NETWORK}/${MASK}\s+\[.*\]\s+via\s+${NEXT_HOP},\s+${INTERFACE}
-  ^C\s+${NETWORK}/${MASK}\s+is directly connected,\s+${INTERFACE}
-  # ...add more patterns as needed
+  ^${ROUTE_CODE}\s+${NETWORK}/${MASK}\s+is\s+directly\s+connected,\s+${INTERFACE} -> Record
+  ^${ROUTE_CODE}\s+${NETWORK}/${MASK}\s+\[${ADMIN_DISTANCE}/${METRIC}\]\s+via\s+${NEXT_HOP},\s+${INTERFACE} -> Record
+  ^${ROUTE_CODE}\s+${NETWORK}/${MASK}\s+\[${ADMIN_DISTANCE}/${METRIC}\]\s+via\s+${NEXT_HOP} -> Record
+  ^${ROUTE_CODE}\s+${NETWORK}/${MASK}\s+\[${ADMIN_DISTANCE}/${METRIC}\]\s+via\s+${NEXT_HOP},\s+\S+,\s+${INTERFACE} -> Record

@@ -14,6 +14,7 @@ db_name = os.environ.get("DB_NAME")
 client = MongoClient(mongo_uri)
 routerdb = client[db_name]
 routercol = routerdb["routers"]
+status_col = routerdb["interface_status"]
 data = []
 
 
@@ -57,7 +58,6 @@ def delete_comment():
 
 @sample.route("/router/<input_ip>")
 def router_detail(input_ip):
-    status_col = routerdb["interface_status"]
     recent_status = list(
         status_col.find({"router_ip": input_ip}).sort("timestamp", -1).limit(1)
     )
@@ -68,20 +68,85 @@ def router_detail(input_ip):
 # Update config for router
 @sample.route("/update_config/<input_ip>", methods=["POST"])
 def update_config(input_ip):
-    interface_name = request.form.get("interface_name")
-    new_ip_address = request.form.get("new_ip_address")
-    subnet_mask = request.form.get("subnet_mask")
-    ip = request.form.get("ip")
-    # Find router document
-    router = routercol.find_one({"ip": ip})
-    if router:
-        # Build config update
+    ip = input_ip
+
+    # Collect interfaces from the form
+    interfaces = {}
+    for key, value in request.form.items():
+        if key.startswith("interfaces"):
+            parts = key.replace("interfaces[", "").replace("]", "").split("[")
+            idx = parts[0]
+            field = parts[1]
+            if idx not in interfaces:
+                interfaces[idx] = {}
+            interfaces[idx][field] = value.strip()
+
+    router = routercol.find_one({"ip": input_ip})
+    router_status = list(
+        status_col.find({"router_ip": input_ip}).sort("timestamp", -1).limit(1)
+    )
+
+    if not router:
+        return redirect(f"/router/{ip}")
+
+    # Retrieve original status data (so we can compare old vs new)
+    latest_entry = router_status[0].get("data", {}) if router_status else {}
+    old_status_data = latest_entry.get("show ip interface brief", [])
+
+    for idx, iface in interfaces.items():
+        new_raw_ip = iface.get("ip", "")
+        new_status = iface.get("status", "").lower()
+
+        # Convert CIDR to IP + mask
+        ip_only = ""
+        subnet_mask = ""
+        if "/" in new_raw_ip:
+            ip_part, prefix = new_raw_ip.split("/", 1)
+            ip_only = ip_part.strip()
+            prefix = int(prefix.strip())
+            mask_bits = (0xFFFFFFFF << (32 - prefix)) & 0xFFFFFFFF
+            subnet_mask = ".".join([
+                str((mask_bits >> 24) & 0xFF),
+                str((mask_bits >> 16) & 0xFF),
+                str((mask_bits >> 8) & 0xFF),
+                str(mask_bits & 0xFF)
+            ])
+        else:
+            ip_only = new_raw_ip
+
+        # Find the matching old data row
+        old_data = next((o for o in old_status_data
+                         if o.get("INTERFACE") == iface.get("name")), None)
+
+        if old_data:
+            old_ip = old_data.get("IP_ADDRESS", "").strip()
+            old_status = old_data.get("STATUS", "").strip().lower()
+        else:
+            old_ip = ""
+            old_status = ""
+
+        # ✅ Skip if nothing has changed
+        if ip_only == old_ip and new_status == old_status:
+            continue
+
+        # ✅ Translate status
+        if new_status == "up":
+            cli_status = "no shutdown"
+        elif new_status == "down":
+            cli_status = "shutdown"
+        elif new_status == "administratively":
+            cli_status = "shutdown"
+        else:
+            cli_status = new_status
+
         config = {
             "ENABLE_PASS": router.get("enable_pass", ""),
-            "INTERFACE_NAME": interface_name,
-            "NEW_IP_ADDRESS": new_ip_address,
+            "INTERFACE_NAME": iface.get("name"),
+            "NEW_IP_ADDRESS": ip_only,
             "SUBNET_MASK": subnet_mask,
+            "STATUS": cli_status,
         }
+
         new_router = {
             "ip": router["ip"],
             "username": router["username"],
@@ -89,7 +154,9 @@ def update_config(input_ip):
             "command_type": "config",
             "details": config,
         }
+
         routercol.insert_one(new_router)
+
     return redirect(f"/router/{ip}")
 
 
