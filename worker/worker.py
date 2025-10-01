@@ -10,7 +10,6 @@ import json
 from ssh_handler import ssh_connect_and_run
 from db_handler import save_to_mongo, delete_by_id
 from parser_handler import parse_output_with_textfsm
-from bson import ObjectId
 import os
 
 # --- การตั้งค่า (Configuration) ---
@@ -62,7 +61,7 @@ def on_message_callback(ch, method, properties, body):
         print(command_output)
 
         # 3. Split combined output into sections for each command
-        # Assume each command output starts with a unique marker, e.g., '--- show ip route ---', etc.
+        # Assume each command output starts with a unique marker, e.g., '--- show ip route ---'
         sections = {}
         current_cmd = None
         for line in command_output.splitlines():

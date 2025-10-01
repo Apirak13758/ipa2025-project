@@ -49,7 +49,7 @@ def ssh_connect_and_run(ip, username, password, command_type, details={}):
             "show version\n",
             "show ip route\n",
         ]
-        
+
         commands1 = [
             "enable\n",
             f"{details.get('ENABLE_PASS', '')}\n",
