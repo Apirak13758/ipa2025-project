@@ -38,7 +38,7 @@ def ssh_connect_and_run(ip, username, password, command_type, details={}):
         print("Connection successful. Getting interactive shell...")
         # Use invoke_shell() for interactive sessions like configuring a router
         shell = ssh_client.invoke_shell()
-        shell.send('terminal length 0\n')  # Disable paging
+        shell.send("terminal length 0\n")  # Disable paging
         # Give the shell time to start
         time.sleep(2)
 
@@ -55,9 +55,9 @@ def ssh_connect_and_run(ip, username, password, command_type, details={}):
             f"configure terminal\n",
             f"interface {details.get('INTERFACE_NAME', '')}\n",
             f"ip address {details.get('NEW_IP_ADDRESS', '')} {details.get('SUBNET_MASK', '')}\n",
-            f"no shutdown\n", # Ensures the interface is administratively up
+            f"no shutdown\n",  # Ensures the interface is administratively up
             f"end\n",
-            f"write memory\n" # Saves the running-config to startup-config
+            f"write memory\n",  # Saves the running-config to startup-config
         ]
 
         if command_type == "show":
@@ -78,7 +78,7 @@ def ssh_connect_and_run(ip, username, password, command_type, details={}):
         # --- Capture and Print Output ---
         # The buffer might not capture everything if there's a lot of output,
         # but it's usually enough for configuration confirmation.
-        output = shell.recv(65535).decode('utf-8')
+        output = shell.recv(65535).decode("utf-8")
         print("\n--- Router Output ---")
         print(output)
         print("--- End of Output ---\n")

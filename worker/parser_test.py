@@ -75,42 +75,52 @@ L        192.168.0.110/32 is directly connected, GigabitEthernet0/0
 R1#
 """
 
+
 def parse_with_template(template_path, output):
     """Parses raw text with a given TextFSM template."""
     with open(template_path) as template_file:
         fsm = textfsm.TextFSM(template_file)
         parsed_data = fsm.ParseText(output)
-        
+
         # Convert the list of lists to a list of dictionaries
         return [dict(zip(fsm.header, row)) for row in parsed_data]
+
 
 def main():
     """Main function to orchestrate the parsing."""
     # Split the raw output by the command prompt to isolate each command's output
     # This is a simple way to do it; more robust methods exist
-    command_outputs = raw_cli_output.split('R1#')
-    
-    show_ip_int_brief_output = [s for s in command_outputs if "show ip interface brief" in s][0]
+    command_outputs = raw_cli_output.split("R1#")
+
+    show_ip_int_brief_output = [
+        s for s in command_outputs if "show ip interface brief" in s
+    ][0]
     show_version_output = [s for s in command_outputs if "show version" in s][0]
     show_ip_route_output = [s for s in command_outputs if "show ip route" in s][0]
 
     # Parse each section with its corresponding template
-    interfaces = parse_with_template('templates/cisco_ios_show_ip_interface_brief.textfsm', show_ip_int_brief_output)
-    version_info = parse_with_template('templates/cisco_ios_show_version.textfsm', show_version_output)
-    routes = parse_with_template('templates/cisco_ios_show_ip_route.textfsm', show_ip_route_output)
+    interfaces = parse_with_template(
+        "templates/cisco_ios_show_ip_interface_brief.textfsm", show_ip_int_brief_output
+    )
+    version_info = parse_with_template(
+        "templates/cisco_ios_show_version.textfsm", show_version_output
+    )
+    routes = parse_with_template(
+        "templates/cisco_ios_show_ip_route.textfsm", show_ip_route_output
+    )
 
     # Combine everything into a single document for MongoDB
     device_data = {
-        "hostname": "R1", # You can parse this or set it manually
+        "hostname": "R1",  # You can parse this or set it manually
         "last_updated": datetime.utcnow().isoformat(),
         "version_info": version_info[0] if version_info else {},
         "interfaces": interfaces,
-        "ip_routes": routes
+        "ip_routes": routes,
     }
 
     # Print the final JSON document, ready for MongoDB
     print(json.dumps(device_data, indent=2))
-    
+
     # In a real script, you would insert this into MongoDB like so:
     # from pymongo import MongoClient
     # client = MongoClient('mongodb://localhost:27017/')

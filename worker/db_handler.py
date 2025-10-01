@@ -61,6 +61,7 @@ def delete_by_id(id_str):
     except Exception as e:
         print(f"Error deleting document: {e}")
 
+
 def main():
     # ตัวอย่างการใช้งาน
     delete_by_id("68dba0830b245b3d4537567e")

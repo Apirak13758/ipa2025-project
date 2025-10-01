@@ -47,7 +47,9 @@ def on_message_callback(ch, method, properties, body):
             return
 
         # 2. SSH to the device and get combined output
-        command_output = ssh_connect_and_run(ip, username, password, command_type, details)
+        command_output = ssh_connect_and_run(
+            ip, username, password, command_type, details
+        )
         if command_type != "show":
             delete_by_id(idx.get("$oid"))
 

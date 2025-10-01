@@ -33,7 +33,12 @@ def add_router():
     ip = request.form.get("ip")
     username = request.form.get("username")
     password = request.form.get("password")
-    data = {"ip": ip, "username": username, "password": password, "command_type": "show"}
+    data = {
+        "ip": ip,
+        "username": username,
+        "password": password,
+        "command_type": "show",
+    }
     if ip and username and password:
         routercol.insert_one(data)
     return redirect("/routers")
@@ -50,7 +55,6 @@ def delete_comment():
     return redirect("/")
 
 
-
 @sample.route("/router/<input_ip>")
 def router_detail(input_ip):
     status_col = routerdb["interface_status"]
@@ -59,6 +63,7 @@ def router_detail(input_ip):
     )
     template = "router_detail.html"
     return render_template(template, ip=input_ip, status=recent_status)
+
 
 # Update config for router
 @sample.route("/update_config/<input_ip>", methods=["POST"])
@@ -75,12 +80,16 @@ def update_config(input_ip):
             "ENABLE_PASS": router.get("enable_pass", ""),
             "INTERFACE_NAME": interface_name,
             "NEW_IP_ADDRESS": new_ip_address,
-            "SUBNET_MASK": subnet_mask
+            "SUBNET_MASK": subnet_mask,
         }
-        routercol.update_one(
-            {"_id": router["_id"]},
-            {"$set": {"command_type": "config", "details": config}}
-        )
+        new_router = {
+            "ip": router["ip"],
+            "username": router["username"],
+            "password": router["password"],
+            "command_type": "config",
+            "details": config,
+        }
+        routercol.insert_one(new_router)
     return redirect(f"/router/{ip}")
 
 

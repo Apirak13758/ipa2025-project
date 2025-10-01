@@ -5,7 +5,7 @@ import time
 ROUTER_IP = "192.168.0.110"
 ROUTER_USER = "admin"
 ROUTER_PASS = "cisco"
-ENABLE_PASS = "" # Password for the 'enable' command
+ENABLE_PASS = ""  # Password for the 'enable' command
 
 # --- Configuration Details (CHANGE THESE) ---
 INTERFACE_NAME = "GigabitEthernet0/2"
@@ -19,16 +19,18 @@ ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 
 try:
     print(f"Connecting to {ROUTER_IP}...")
-    ssh_client.connect(hostname=ROUTER_IP,
-                       username=ROUTER_USER,
-                       password=ROUTER_PASS,
-                       look_for_keys=False,
-                       allow_agent=False)
+    ssh_client.connect(
+        hostname=ROUTER_IP,
+        username=ROUTER_USER,
+        password=ROUTER_PASS,
+        look_for_keys=False,
+        allow_agent=False,
+    )
 
     print("Connection successful. Getting interactive shell...")
     # Use invoke_shell() for interactive sessions like configuring a router
     shell = ssh_client.invoke_shell()
-    shell.send('terminal length 0\n')  # Disable paging
+    shell.send("terminal length 0\n")  # Disable paging
     # Give the shell time to start
     time.sleep(2)
 
@@ -45,9 +47,9 @@ try:
         f"configure terminal\n",
         f"interface {INTERFACE_NAME}\n",
         f"ip address {NEW_IP_ADDRESS} {SUBNET_MASK}\n",
-        f"no shutdown\n", # Ensures the interface is administratively up
+        f"no shutdown\n",  # Ensures the interface is administratively up
         f"end\n",
-        f"write memory\n" # Saves the running-config to startup-config
+        f"write memory\n",  # Saves the running-config to startup-config
     ]
 
     # --- Execute Commands ---
@@ -60,7 +62,7 @@ try:
     # --- Capture and Print Output ---
     # The buffer might not capture everything if there's a lot of output,
     # but it's usually enough for configuration confirmation.
-    output = shell.recv(65535).decode('utf-8')
+    output = shell.recv(65535).decode("utf-8")
     print("\n--- Router Output ---")
     print(output)
     print("--- End of Output ---\n")
