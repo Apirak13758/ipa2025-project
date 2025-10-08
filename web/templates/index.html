@@ -1,32 +1,51 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 
 <head>
-    <title>Sample app</title>
-    <link rel="stylesheet" href="/static/style.css" />
-<!DOCTYPE html>
-<html>
-<head>
-        <title>About Me - IPA2025 Project</title>
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-        <link rel="stylesheet" href="/static/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome - IPA2025 Project</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
+
 <body>
-        {% include 'navbar.html' %}
-        <div class="container mt-5">
-            <div class="row justify-content-center">
-                <div class="col-md-8">
-                    <div class="card shadow">
-                        <div class="card-body text-center">
-                            <img src="https://avatars.githubusercontent.com/u/1?v=4" class="rounded-circle mb-3" width="120" alt="Profile">
-                            <h2 class="card-title">About Me</h2>
-                            <p class="lead">Hi, I'm Apirak13758. Welcome to my IPA2025 network automation project!</p>
-                            <p>This web app helps you manage and monitor routers using modern automation tools.</p>
-                            <p>Contact: <a href="mailto:your@email.com">your@email.com</a></p>
-                        </div>
+    {% include 'navbar.html' %}
+    
+    <header class="hero-section text-center text-white d-flex align-items-center justify-content-center">
+        <div class="hero-content">
+            <h1 class="display-4 fw-bold">ยินดีต้อนรับเข้าสู่ IPA-2025 Project</h1>
+            <p class="lead mt-3">ทีมงานเราพัฒนาระบบจัดการและมอนิเตอร์ Router แบบอัตโนมัติ</p>
+            <a href="/routers" class="btn btn-lg btn-light mt-3">ไปยังหน้า Router</a>
+        </div>
+    </header>
+
+    <section class="features-section py-5 bg-light">
+        <div class="container">
+            <div class="row text-center">
+                <div class="col-md-4 mb-4">
+                    <div class="feature-card p-4 shadow-sm rounded">
+                        <h4>จัดการ Router</h4>
+                        <p>เข้าถึงและปรับแต่ง Router ได้ง่าย ๆ ผ่านหน้าเว็บ</p>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="feature-card p-4 shadow-sm rounded">
+                        <h4>มอนิเตอร์แบบ Real-time</h4>
+                        <p>ตรวจสอบสถานะเครือข่ายและอุปกรณ์แบบเรียลไทม์</p>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="feature-card p-4 shadow-sm rounded">
+                        <h4>ปรับแต่งอุปกรณ์ได้ง่าย</h4>
+                        <p>สามารถตั้งค่าและจัดการ Router ได้อย่างสะดวก รวดเร็ว และปลอดภัย</p>
                     </div>
                 </div>
             </div>
         </div>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    </section>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>
