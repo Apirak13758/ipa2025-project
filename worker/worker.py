@@ -141,4 +141,3 @@ def start_listening():
 if __name__ == "__main__":
     while True:
         start_listening()
-
